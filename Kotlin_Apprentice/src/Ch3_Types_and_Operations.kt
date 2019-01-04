@@ -127,6 +127,4 @@ fun main(args: Array<String>) {
         val result = 2 + 2
         println(result)
     }
-
-
 }
