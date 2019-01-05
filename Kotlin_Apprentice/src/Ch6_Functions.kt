@@ -1,6 +1,9 @@
 fun main(args: Array<String>) {
     //Fuction을 사용해, 반복되는 코드를 복사 붙여넣기 하는 대신 함수를 실행해 줄 수 있다.
 
+
+
+
     //Function basics
     fun printMyName() { //fun 키워드로 함수를 선언 한다. cf.Swift 에서는 func
         println("My name is Dick Lucas.")
