@@ -153,7 +153,7 @@ fun main(args: Array<String>) {
 
 
     //Data classes
-    //두 객체가 동일한지 비교하는 하고, 쉡게 데이터를 출력할 수 있는 메서드를 추가한 Student 클래스 정
+    //두 객체가 동일한지 비교하는 하고, 쉡게 데이터를 출력할 수 있는 메서드를 추가한 Student 클래스 정의
     class Student(var firstName: String, var lastName: String, var id: Int) {
         override fun hashCode(): Int {
             val prime = 31
