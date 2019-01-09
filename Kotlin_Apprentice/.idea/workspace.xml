@@ -11,23 +11,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Ch16_Enum_Classes.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="199" column="17" lean-forward="true" selection-start-line="199" selection-start-column="17" selection-end-line="199" selection-end-column="17" />
+            <state relative-caret-position="204">
+              <caret line="188" column="34" lean-forward="true" selection-start-line="188" selection-start-column="34" selection-end-line="188" selection-end-column="34" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Ch16_Downloader.kt">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Ch17_Interfaces.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-528">
-              <caret line="15" column="47" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
-              <folding>
-                <element signature="e#97#217#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="297">
+              <caret line="243" column="26" lean-forward="true" selection-start-line="243" selection-start-column="26" selection-end-line="243" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -73,6 +70,7 @@
         <option value="$PROJECT_DIR$/src/Ch15_Advanced_Classes.kt" />
         <option value="$PROJECT_DIR$/src/Ch16_Enum_Classes.kt" />
         <option value="$PROJECT_DIR$/src/Ch16_Downloader.kt" />
+        <option value="$PROJECT_DIR$/src/Ch17_Interfaces.kt" />
       </list>
     </option>
   </component>
@@ -111,7 +109,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547012628001" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547036447900" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -403,8 +401,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Ch16_Enum_Classes.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="199" column="17" lean-forward="true" selection-start-line="199" selection-start-column="17" selection-end-line="199" selection-end-column="17" />
+        <state relative-caret-position="204">
+          <caret line="188" column="34" lean-forward="true" selection-start-line="188" selection-start-column="34" selection-end-line="188" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Ch17_Interfaces.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="243" column="26" lean-forward="true" selection-start-line="243" selection-start-column="26" selection-end-line="243" selection-end-column="26" />
         </state>
       </provider>
     </entry>
