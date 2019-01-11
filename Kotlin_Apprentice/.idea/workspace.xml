@@ -11,11 +11,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Ch21_Functional_Programming.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="619">
-              <caret line="323" column="12" selection-start-line="323" selection-start-column="12" selection-end-line="323" selection-end-column="12" />
+            <state relative-caret-position="405">
+              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Ch22_Conventions_and_Operator_Overloading.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="157" column="24" lean-forward="true" selection-start-line="157" selection-start-column="24" selection-end-line="157" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -35,6 +44,7 @@
       <find>sendMessageToEarth</find>
       <find>beginBattle</find>
       <find>fun(robo</find>
+      <find>infix</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -51,10 +61,11 @@
         <option value="$PROJECT_DIR$/src/Ch20_SpaceCraft.kt" />
         <option value="$PROJECT_DIR$/src/Ch20_Exceptions.kt" />
         <option value="$PROJECT_DIR$/src/Ch21_Functional_Programming.kt" />
+        <option value="$PROJECT_DIR$/src/Ch22_Conventions_and_Operator_Overloading.kt" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="1281" />
     <option name="y" value="23" />
     <option name="width" value="1279" />
@@ -89,7 +100,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547217092136" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547222789975" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
@@ -212,8 +223,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Ch21_Functional_Programming.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="619">
-          <caret line="323" column="12" selection-start-line="323" selection-start-column="12" selection-end-line="323" selection-end-column="12" />
+        <state relative-caret-position="405">
+          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Ch13_Properties.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="96" column="8" selection-start-line="96" selection-start-column="2" selection-end-line="96" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Ch22_Conventions_and_Operator_Overloading.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="157" column="24" lean-forward="true" selection-start-line="157" selection-start-column="24" selection-end-line="157" selection-end-column="24" />
         </state>
       </provider>
     </entry>
