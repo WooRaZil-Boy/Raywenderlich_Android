@@ -4,4 +4,7 @@
     <string name="your_score">Your Score: %s</string>
     <string name="time_left">Time left: %s</string>
     <string name="game_over_message">Times up! Your score was: %s</string>
+    <string name="about_title">Timefighter %s</string>
+    <string name="about_message">Created by YOUR NAME HERE</string>
+    <!-- 코드 전체의 문자열을 저장할 수 있다. name에 식별자를 추가해 주고 해당 text를 쓰면 된다. -->
 </resources>

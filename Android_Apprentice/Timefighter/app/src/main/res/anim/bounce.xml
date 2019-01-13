@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:fillAfter="true"
+     android:interpolator="@android:anim/bounce_interpolator">
+    <!-- set 속성은 동일한 애니메이션에서 둘 이상의 변환을 묶어 동시에 실행할 수 있도록 포함하는 컨테이너 이다.
+    여기서, set는  애니메이션이 완료된 이후 채워지도록 한다(fillAfter="true").
+    즉 애니메이션이 실행되기 전의 원래 상태로 돌아가지 않고, 마지막 애니메이션의 상태가 그대로 유지된다 -->
+    <!-- interpolator="@android:anim/bounce_interpolator"는 애니메이션 내에서 설정한 시간과 관계없이 애니메이션이 시간에 따라 수행되는 속도에 영향을 준다.
+    다양한 interpolator가 있으며, 필요할 경우 사용자 지정 interpolator를 생성할 수도 있다. -->
+    <scale
+            android:duration="2000"
+            android:fromXScale="2.0"
+            android:fromYScale="2.0"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:toXScale="1.0"
+            android:toYScale="1.0" />
+    <!-- scale 변화에 관한 속성을 지정해 준다. pivotX, pivotY는 애니메이션이 발생하는 중심점의 좌표이다(여기서는 중심).
+    따라서 위에서 설정한 애니메이션은
+        • 애니메이션 뷰의 크기가 2배가 된다.
+        • 뷰를 원래 크기로 축소한다.
+        • 2초동안 지속된다.
+        • bounce_interpolator를 사용한다.
+    -->
+
+</set>

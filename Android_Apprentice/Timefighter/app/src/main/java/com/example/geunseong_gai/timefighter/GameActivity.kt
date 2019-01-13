@@ -2,8 +2,12 @@ package com.example.geunseong_gai.timefighter
 
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -62,7 +66,13 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
         //ex. gameScoreTextView = findViewById<TextView>(R.id.game_score_text_view)
         //레이아웃에서 추가한 컴포넌트를 코드에서 사용할 수 있도록 변수에 할당해 준다.
 
-        tapMeButton.setOnClickListener { v -> incrementScore() } //Lambda
+        tapMeButton.setOnClickListener { v ->
+            val bounceAnimation = AnimationUtils.loadAnimation(this, R.anim.bounce)
+            //애니메이을 불러온다.
+            v.startAnimation(bounceAnimation) //애니메이션 시작
+
+            incrementScore()
+        } //Lambda
         //클릭 또는 탭 했을 때의 listener를 연결한다. 즉, 버튼을 탭할 떄 마다 incrementScore()가 호출된다.
 
         if (savedInstanceState != null) { //savedInstanceState는 Bundle로 화면이 전환될 때 전달할 값의 Dictionary이다.
@@ -108,6 +118,25 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
         super.onDestroy()
 
         Log.d(TAG, "onDestroy called.")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        //onCreateOptionsMenu는 Activity의 옵션 메뉴를 구성한다.
+        super.onCreateOptionsMenu(menu)
+
+        menuInflater.inflate(R.menu.menu, menu) //Activity의 menuInflater를 사용해 레이아웃을 설정한다.
+        //xml에서 작성한 menu를 가져온다. menuInflater는 xml파일을 Menu 객체로 인스턴스화 한다.
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //메뉴의 항목이 선택될 때마다 호출된다.
+        if (item.itemId == R.id.action_settings) { //id가 이전에 설정한 항목의 id와 일치한다
+            showInfo()
+        }
+
+        return true
     }
 
 
@@ -199,6 +228,18 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
         //duration으로 지정할 수 있는 상수로는, LENGTH_SHORT, LENGTH_LONG이 있다.
         resetGame()
     }
+
+    private fun showInfo() {
+        var dialogTitle = getString(R.string.about_title, BuildConfig.VERSION_NAME)
+        //getString()으로 strings.xml에서 해당 id의 텍스트를 가져온다.
+        //앱을 컴파일 할때 설정들의 정보를 BuildConfig에서 가져온다. 여기에서는 about_title의 placeholder에 들어간다.
+        val dialogMessage = getString(R.string.about_message)
+
+        val builder = AlertDialog.Builder(this) //iOS의 UIAlertController와 비슷
+        builder.setTitle(dialogTitle)
+        builder.setMessage(dialogMessage)
+        builder.create().show() //dialog 표
+    }
 }
 
 //Chapter 1: Setting Up Android Studio
@@ -273,7 +314,7 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
 //레이아웃에서 추가한 컴포넌트를 변수에 연결 시켜 준다. findViewById()로 설정한 ID를 가진 뷰를 가져온다.
 
 //Managing strings in your app
-//String resources 로 Text를 Localizing 해 줄 수 있다. Project > res/values/strings.xml 을 연다.
+//String resources 로 Text를 Localizing 해 줄 수 있다. Project ▸ res/values/strings.xml 을 연다.
 //strings.xml에 코드 전체의 문자열을 저장할 수 있다.
 //<string name="app_name">Timefighter</string> 와 같이 name에 식별자를 추가해 주고 해당 text를 쓰면 된다.
 
@@ -316,6 +357,47 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
 
 //Where to go from here?
 //https://developer.android.com/studio/debug/
+
+
+
+
+//Chapter 5: Prettifying the App
+
+//Changing the app bar color
+//project navigator에서 app ‣ res ‣ values ‣ colors.xml를 클릭해, 색상을 설정해 줄 수 있다.
+//앱에서 사용된 색상을 저장하는 데 사용되며, strings.xml과 유사하다.
+//색상 속성은 R.java로 컴파일될 때 앱에서 참조로 사용할 name 속성과 함께 <color> 태그로 정의된다. 색상은 16진수로 표현할 수 있다.
+//이렇게 설정된 색상은 app ‣ res ‣ values ‣ styles.xml에서 값을 변경해 줄 수 있다.
+//<item> 태그에서 colors.xml에서 설정한 색상을 넣어준다.
+//https://developer.android.com/guide/topics/ui/themes
+//이후, activity_game.xml 에서 Design 대신 Text로 전환한 후, ConstraintLayout 태그를 업데이트하여 배경 색을 변경한다.
+
+//Animations
+//애니메이션에서 중요한 규칙은 어디서 그리고 언제 사용할 지 정하는 것이다.
+//app ‣ res 에서 마우스 오른쪽 버튼을 눌러 New ‣ Android resource directory로 새 리소스 폴더를 만든다.
+//Resource type을 anim으로 변경하고(자동으로 Directory name도 변경된다) 생성한다.
+//다음으로 애니메이션을 정의하는 파일을 생성해야 한다. 방금 생성한 anim 폴더를 마우스 오른쪽 버튼으로 클릭하고 New ‣ Animation resource file 을 클릭한다.
+//파일이름에 생성할 애니메이션의 이름을 적어주면 된다. set 속성은 동일한 애니메이션에서 둘 이상의 변환을 묶어 동시에 실행할 수 있도록 포함하는 컨테이너이다.
+//https://developer.android.com/guide/topics/resources/animation-resource.html
+
+
+
+
+//Adding a Dialog
+//Dialog는 화면의 주요 콘텐츠에서 벗어나지 않고 사용자가 필요로 하는 정보를 제공해 주는 방법이다.
+//가장 손쉬운 방법은 상단 표시 줄에 버튼을 설정해 주는 것이다.
+//project navigator에서 app ‣ res 에서 마우스 우클릭하여 Android resource directory 폴더를 생성한다.
+//anim 폴더를 생성했을 때와 비슷하지만, Resource Type을 menu로 선택해 준다.
+//똑같이 New ‣ Menu resource file을 클릭해 파일을 생성한다.
+//생성한 파일에서 Design 탭을 누르면 레이아웃 편집기와 유사한 설정을 볼 수 있다.
+//좌측 상단의 Palette에서 필요한 컴포넌트를 가져와 드래그 하면 된다.
+//레이아웃 편집기에서 컴포넌트를 추가했던 것 처럼 ID를 설정해 주고 알맞은 Text를 입력한다. icon 옆의 ... 버튼을 선택해 이미지를 포함할 수 있다.
+//showAsAction 속성은 컴포넌트가 표시되는 방법을 정의한다. 역시 옆의 ... 버튼을 눌러 설정해 줄 수 있다.
+//항상 표시되도록 하려면 always를 선택하면 된다.
+
+
+
+
 
 
 
