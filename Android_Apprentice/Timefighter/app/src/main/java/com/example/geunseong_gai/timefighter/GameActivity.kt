@@ -3,12 +3,16 @@ package com.example.geunseong_gai.timefighter
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 
 class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity를 확장한다.
     //해당 앱은 Activity가 하나인 간단한 앱이고, GameActivity가 시작 Activity이자 유일한 Activity이다.
+    internal val TAG = GameActivity::class.java.simpleName //클래스 이름을 반환한다.
+    //로그 메시지에서 클래스 이름을 사용하여, 메시지가 어떤 클래스에서 출력되었는지 쉽게 알 수 있다.
+
     internal lateinit var gameScoreTextView: TextView
     internal lateinit var timeLeftTextView: TextView
     internal lateinit var tapMeButton: Button
@@ -24,6 +28,11 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
     internal var countDownInterval: Long = 1000
     internal var timeLeft = 60
 
+    companion object { //Java, Swift의 static이라 생각하면 된다. class 인스턴스에 상관없이 공유되는 변
+        private val SCORE_KEY = "SCORE_KEY"
+        private val TIME_LEFT_KEY = "TIME_LEFT_KEY"
+        //방향 변경(회전) 시, 저장할 변수들의 키.
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) { //onCreate 함수는 해당 Activity의 진입점이다.
         //AppCompatActivity의 메서드를 override한다.
@@ -35,6 +44,12 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
         //사용자가 생성한 레이아웃을 가져와서 화면에 배치한다. 레이아웃 ID는 "R.layout.파일이름"이 된다.
 
         //여기까지가 Android에서 Activity를 생성하는 핵심이다. 가장 일반적이며, 다른 로직들은 setContentView() 호출 이후에 온다.
+
+        Log.d(TAG, "onCreate called. Score is: $score")
+        //Activity가 생성될 때, 메시지를 기록한다. 현재의 클래스와, score를 출력한다.
+        //앱을 실행하면, 콘솔 창의 Logcat에서 디바이스가 수행하는 모든 작업을 볼 수 있다.
+        //여기에는 응용 프로그램 외부에서 오는 메시지도 포함되며, 필요한 메시지만 필터링할 수도 있다.
+
 
 
 
@@ -50,11 +65,53 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
         tapMeButton.setOnClickListener { v -> incrementScore() } //Lambda
         //클릭 또는 탭 했을 때의 listener를 연결한다. 즉, 버튼을 탭할 떄 마다 incrementScore()가 호출된다.
 
-        resetGame()
+        if (savedInstanceState != null) { //savedInstanceState는 Bundle로 화면이 전환될 때 전달할 값의 Dictionary이다.
+            //여기서는 화면이 회전한 경우, savedInstanceState에 값이 있게 된다.
+            score = savedInstanceState.getInt(SCORE_KEY)
+            timeLeft = savedInstanceState.getInt(TIME_LEFT_KEY)
+            //onSaveInstanceState에서 저장한 값들을 복원해 준다.
+
+            restoreGame()
+        } else { //savedInstanceState가 null인 경우는 처음 앱을 시작했을 때이다.
+            resetGame()
+        }
     }
     //onCreate()가 Activity를 사용하는 유일한 진입점은 아니지만 가장 익숙해져야 한다.
     //onCreate()은 Activity의 Life-cycle을 구성하는 다른 메서드와 함께 작동한다.
     //https://developer.android.com/guide/components/activities/activity-lifecycle.html
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        //디바이스를 회전할 때, 속성이 0으로 재설정 된다. 이는 안드로이드가 기기 방향 변경을 처리하는 방식과 연관이 있다.
+        //안드로이드는 방향 변경을 감지할 때마다 세 가지 작업을 수행한다.
+        // 1. Activity의 property를 저장 한다.
+        // 2. Activity를 메모리에서 해제한다.
+        // 3. onCreate를 호출하여 새로운 방향에 대한 Activity를 다시 시작한다.
+        //안드로이드는 설정이 변경될 때마다 이를 수행한다(ex. 방향 변경, 언어 변경 ...).
+        //따라서 앱을 사용하는 동안 Activity가 여러 번 삭제되고 생성될 수 있다. 이런 설정 변경이 있을 때마다 이전 상태를 복구할 수 있도록 개발해야 한다.
+
+        //시스템은 Activity가 중단될 때, onSaveInstanceState()를 호출해 상태 정보를 저장한다.
+        //기본 구현은 위젯의 스크롤 위치와 같은 뷰 계층 구조 정보를 저장한다.
+        //따라서, 설정이 변경될 떄 예기치 않게 삭제되는 값들을 추가해 줄 수 있다.
+
+        outState.putInt(SCORE_KEY, score)
+        outState.putInt(TIME_LEFT_KEY, timeLeft)
+        //Bundle에 저장할 값을 삽입한다. key-value
+        //Bundle은 안드로이드가 다른 화면으로 값을 전달할 때 사용하는 Dictionary이다.
+
+        countDownTimer.cancel() //타이머 취소
+
+        Log.d(TAG, "onSaveInstanceState: Saving Score: $score & Time Left: $timeLeft")
+    }
+
+    override fun onDestroy() { //Activity 가 해제될 때 호출된다.
+        super.onDestroy()
+
+        Log.d(TAG, "onDestroy called.")
+    }
+
+
+
 
     private fun incrementScore() {
         if (!gameStarted) { //게임이 시작되지 않았다면 시작한다.
@@ -99,7 +156,33 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
             }
         }
 
-        gameStarted = false //게임 시작 flag 토
+        gameStarted = false //게임 시작 flag 토글
+    }
+
+    private fun restoreGame() {
+        val restoredScore = getString(R.string.your_score, Integer.toString(score))
+        gameScoreTextView.text = restoredScore
+
+        val restoredTime = getString(R.string.time_left, Integer.toString(timeLeft))
+        timeLeftTextView.text = restoredTime
+
+        countDownTimer = object : CountDownTimer((timeLeft * 1000).toLong(), countDownInterval) { //싱글톤
+            //timeLeft * 1000, 1000 으로, timeLeft초 동안, 1초 간격으로 시간이 줄어든다. //0에 도달 할때까지 계속된다.
+            override fun onTick(millisUntilFinished: Long) { //타이머가 줄어들 때 마다(여기서는 1000ms, 1초) 호출
+                //줄어든 시간이 millisUntilFinished로 전달 된다.
+                timeLeft = millisUntilFinished.toInt() / 1000
+
+                val timeLeftString = getString(R.string.time_left, Integer.toString(timeLeft))
+                timeLeftTextView.text = timeLeftString
+            }
+
+            override fun onFinish() { //타이머가 종료될 때 호출
+                endGame()
+            }
+        }
+
+        countDownTimer.start()
+        gameStarted = true
     }
 
     private fun startGame() {
@@ -201,6 +284,38 @@ class GameActivity : AppCompatActivity() { //GameActivity는 AppCompatActivity�
 // 3. Activity 클래스에서 property를 설정하고, findViewById로 ID를 참조해 온다.
 // 4. view에 로직을 추가해 준다.
 
+
+
+
+//Chapter 4: Debugging
+
+//Add some logging
+//디버깅의 가장 기본적인 방법은 앱에 logging을 추가하는 것이다. 로깅은 코드의 특정 지점에서 어떤 일이 일어나고 있는지 알려 준다.
+//앱을 실행하면, 콘솔 창의 Logcat에서 디바이스가 수행하는 모든 작업을 볼 수 있다.
+//여기에는 응용 프로그램 외부에서 오는 메시지도 포함되며, 필요한 메시지만 필터링할 수도 있다.
+//https://developer.android.com/studio/command-line/logcat.html
+
+//Orientation changes
+//디바이스를 회전할 때, 속성이 0으로 재설정 된다. 이는 안드로이드가 기기 방향 변경을 처리하는 방식과 연관이 있다.
+//안드로이드는 방향 변경을 감지할 때마다 세 가지 작업을 수행한다.
+// 1. Activity의 property를 저장 한다.
+// 2. Activity를 메모리에서 해제한다.
+// 3. onCreate를 호출하여 새로운 방향에 대한 Activity를 다시 시작한다.
+//안드로이드는 설정이 변경될 때마다 이를 수행한다(ex. 방향 변경, 언어 변경 ...). 따라서 앱을 사용하는 동안 Activity가 여러 번 삭제되고 생성될 수 있다.
+//이런 설정 변경이 있을 때마다 이전 상태를 복구할 수 있도록 개발해야 한다.
+
+//Breakpoints //p.86
+//일일이 로깅하지 않고, breakpoint(중단점)을 설정 해 앱의 실행을 일시 중지 시키고, 현재 상태를 검사할 수 있다.
+//line num이 있는 회색 테두리(gutter)를 클릭하면 breakpoint(빨간 원)가 생성된다.
+//이후, Run 버튼 옆의 Debug를 클릭하면, 설정한 중단점에서 일시 중지 된다.
+//디버그 윈도우의 Variable 탭에서 해당 Activity를 선택해, 할당된 위치, property들의 값 등을 살펴 볼 수 있으며, console에 명령어를 입력할 수도 있다.
+//해당 값들을 확인해 제대로 값들이 전달되고 저장되었는지 확인해 볼 수 있다.
+
+//Restarting the game
+//방향 변경을 감지하면, onCreate를 다시 호출하므로(Orientation changes 참고), onCreate()에서 이전 값을 복원해 준다.
+
+//Where to go from here?
+//https://developer.android.com/studio/debug/
 
 
 
