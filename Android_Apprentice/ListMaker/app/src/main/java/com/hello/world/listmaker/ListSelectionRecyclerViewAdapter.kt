@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewHolder>() {
+class ListSelectionRecyclerViewAdapter(val lists : ArrayList<TaskList>) : RecyclerView.Adapter<ListSelectionViewHolder>() {
     //RecyclerView.Adapter<ListSelectionViewHolder>에서 <> 사이에 구현하는 viewHolder를 지정해 주면 된다.
-    val listTitles = arrayOf("Shopping List", "Chores", "Android Tutorials")
+    //list data를 모아 놓은 lists 인자를 받아온다.
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListSelectionViewHolder { //레이아웃을 생성한다.
         val view = LayoutInflater.from(parent.context) //LayoutInflater 객체를 사용해 코드로 레이아웃을 생성한다.
@@ -21,19 +21,25 @@ class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewH
     }
 
     override fun getItemCount(): Int { //RecyclerView의 항목수를 반환한다.
-        return listTitles.size
+        return lists.size
     }
 
     override fun onBindViewHolder(holder: ListSelectionViewHolder, position: Int) { //개별의 ViewHolder에 바인딩한다.
 //        if (holder != null) { //null이 아닌지 확인
             holder.listPosition.text = (position + 1).toString()
-            holder.listTitle.text = listTitles[position]
+            holder.listTitle.text = lists.get(position).name //불러온 data lists에서 값을 입력한다.
 //        }
 
         //RecyclerView를 스크롤할 때마다 반복해서 호출된다.
     }
 
     //이거 Nullable로 생성하면 인자가 다름..
+
+    fun addList(list: TaskList) {
+        lists.add(list) //새로 생성된 TaskList를 추가해 준다.
+        notifyDataSetChanged() //Adaptor에 기본 데이터를 쿼리해서 업데이트 해야함을 알려준다.
+        //여기에서 데이터는 TaskList 타입으로 ListSelectionRecyclerViewAdapter에 전달된 ArrayList이다.
+    }
 }
 
 //클래스 명에 커서를 올리고, option + Enter 를 하면, 필요한 추가 메서드를 자동으로 추가할 수 있다.
