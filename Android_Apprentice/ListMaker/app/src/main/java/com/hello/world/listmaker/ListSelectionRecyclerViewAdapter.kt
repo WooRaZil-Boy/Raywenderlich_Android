@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class ListSelectionRecyclerViewAdapter(val lists : ArrayList<TaskList>) : RecyclerView.Adapter<ListSelectionViewHolder>() {
+class ListSelectionRecyclerViewAdapter(val lists: ArrayList<TaskList>,
+                                       val clickListener: ListSelectionRecyclerViewClickListener) :
+    RecyclerView.Adapter<ListSelectionViewHolder>() {
     //RecyclerView.Adapter<ListSelectionViewHolder>에서 <> 사이에 구현하는 viewHolder를 지정해 주면 된다.
     //list data를 모아 놓은 lists 인자를 받아온다.
+    interface ListSelectionRecyclerViewClickListener {
+        fun listItemClicked(list: TaskList)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListSelectionViewHolder { //레이아웃을 생성한다.
         val view = LayoutInflater.from(parent.context) //LayoutInflater 객체를 사용해 코드로 레이아웃을 생성한다.
@@ -28,6 +33,9 @@ class ListSelectionRecyclerViewAdapter(val lists : ArrayList<TaskList>) : Recycl
 //        if (holder != null) { //null이 아닌지 확인
             holder.listPosition.text = (position + 1).toString()
             holder.listTitle.text = lists.get(position).name //불러온 data lists에서 값을 입력한다.
+            holder.itemView.setOnClickListener { //터치시 이벤트
+                clickListener.listItemClicked(lists.get(position))
+            }
 //        }
 
         //RecyclerView를 스크롤할 때마다 반복해서 호출된다.
