@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_list.*
 class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
     companion object {
         val INTENT_LIST_KEY = "list"
+        val LIST_DETAIL_REQUEST_CODE = 123
     }
 
     lateinit var listsRecyclerView: RecyclerView //list를 생성하는 View
@@ -106,11 +107,34 @@ class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListS
         //Intent 생성자에 현재 Activity와 표시하려는 Activity 클래스를 전달한다.
         listDetailIntent.putExtra(INTENT_LIST_KEY, list) //Extra 추가
         //Extra는 receiver가 수행할 작업에 대한 정보 제공하는 key-value 쌍이다.
-        startActivity(listDetailIntent) //다음 Activity로 전환한다.
+//        startActivity(listDetailIntent) //해당 Intent를 가지고 다음 Activity로 전환한다.
+//        //단순히 다음 Activity를 시작하는 용도
+
+        startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE) //해당 Intent를 가지고 다음 Activity로 전환한다.
+        //다음 Activity를 사용해 어떤 결과값을 받는 용도. 즉, ListDetailActivity가 종료되면 MainActivity로 result와 함께 돌아온다. p.187
+        //두 번째 인자로 전달하는 값은 result를 식별할 수 있는 request code 이다.
     }
 
     override fun listItemClicked(list: TaskList) { //선택 시 이벤
         showListDetail(list)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LIST_DETAIL_REQUEST_CODE) { //request code 확인
+            data?.let { //data가 null인지 여부 확인
+                //https://kotlinlang.org/docs/reference/null-safety.html
+                listDataManager.saveList(data.getParcelableExtra(INTENT_LIST_KEY)) //업데이트할 항목이 있으면 Data model에서 업데이트
+                updateLists() //view 업데이트
+            }
+        }
+    }
+
+    private fun updateLists() {
+        val lists = listDataManager.readLists()
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
+        //새로운 데이터를 불러와 view를 업데이트 한다.
     }
 }
 
@@ -234,7 +258,31 @@ class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListS
 //https://developer.android.com/reference/android/os/Parcelable
 //Kotlin 1.1.4에서는 @Parcelize를 주석으로 달아 일일이 Parcelable을 구현할 필요 없다(아직 베타 버전).
 
-//Bringing everything together
+
+
+
+//Chapter 10: Completing the Detail View
+
+//Getting started
+//activity_list_detail.xml 파일의  Palette 창에서 AppCompat ▸ RecyclerView를 선택한다.
+//ID와 제약조건을 설정해 준다 (match_constraints).
+
+//Coding the RecyclerView
+//kt 파일이 있는 패키지에서 우클릭 ▸ New ▸ Kotlin File/Class 으로 해서, 이름을 정하고, Kind는 Class로 해서 사용할 class를 생성한다.
+
+//Adapting the Adapter
+//Android Studio에서 구현해야하는 멤버를 쉽게 알수 있다. 빨간 밑줄이 그어져 있는 클래스 이름을 클릭하고, Alt + Return을 누른다.
+//Implement Members를 누르면, 구현해야할 멤버들을 표시해 준다. 여기서 필요한 것을 선택해 확인을 누르면 보일러 플레이트 코드가 보여진다.
+
+//Visualizing the ViewHolder
+//List_Detail에서도 목록을 추가할 수 있는 FAB를 추가해 준다. 계층구조에서 ConstraintLayout에 추가해 줘야 한다.
+//blueprint에서 FAB를 알맞은 위치로 (대부분의 경우 우측 하단) 옮겨주고 ID와 제약조건을 추가해 주면 된다.
+
+//Getting the list back
+//세부 아이템을 list에 추가하는 것은 ListDataManager를 생성해 MainActivity.kt 에서 한 것처럼 똑같이 해 줄 수 있다.
+//하지만, 데이터가 저장되는 별도의 지점이 두 개가 생겨 버그가 발생할 확률이 높아질 수 있다.
+//해당 list를 detail activity로 전달하고 원래의 Data manager를 사용하는 것이 더 좋은 구현이다(DI).
+//https://kotlinlang.org/docs/reference/null-safety.html
 
 
 

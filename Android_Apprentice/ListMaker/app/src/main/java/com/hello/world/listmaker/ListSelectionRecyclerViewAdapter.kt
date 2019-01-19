@@ -57,7 +57,10 @@ class ListSelectionRecyclerViewAdapter(val lists: ArrayList<TaskList>,
 //res/layout에서 우클릭 해서 New ▸ Layout resource file 을 선택해 준다.
 //여기서는 ListView에 사용할 Layout을 생성하므로 Root element에 LinearLayout을 입력해 준다.
 //iOS에서의 xib와 비슷하게 개별적인 객체의 레이아웃을 정의해 주는 파일이라 생각하면 된다.
+//여기서는 List에서 각 하나의 item에 대한 레이아웃을 설정하는 것이므로, layout_height를 wrap_content로 설정해 준다.
+//그리고, 세부사항을 보여줄 TextView를 계층구조에 삽입한다.
 //레이아웃 에디터에서 이전에 했던 대로, 컴포넌트를 추가하고, ID와 제약조건을 추가해 준다.
+
 //Attribute창 상단 우측에 검색 옆에 View All Attributes 버튼이 있다. 이를 클릭하면, 변경할 수 있는 모든 속성을 볼 수 있다.
 //여기서는 Layout_Margin의 all을 선택해, 패딩을 줄 수 있다.
 //https://developer.android.com/guide/practices/screens_support
