@@ -2,53 +2,65 @@ package com.hello.world.listmaker
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
-
+import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_list.*
 
-class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
+class MainActivity : AppCompatActivity(), ListSelectionFragment.OnListItemFragmentInteractionListener {
+    private var listSelectionFragment: ListSelectionFragment = ListSelectionFragment.newInstance()
+    //DataManager가 Fragment에서 처리되지만, Actvity가 사용하던 이전 논리는 유지해야 한다.
+    //따라서 Fragment에 대한 참조가 필요하다. Activity가 생성될 때마다 새 Fragment 인스턴스를 생성한다.
+    private var fragmentContainer: FrameLayout? = null
+    //런타임에 Fragment를 동적으로 추가 / 제거할 수 있게 해 주는 객체. 다양한 화면에서 유동적인 UI를 만들 수 있다.
+
+    private var largeScreen = false //큰 화면에서 작동하는 지 여부
+    private var listFragment : ListDetailFragment? = null //큰 화면에서 작동 중이라면, ListDetailFragment이 필요하다.
+
     companion object {
         val INTENT_LIST_KEY = "list"
         val LIST_DETAIL_REQUEST_CODE = 123
     }
 
-    lateinit var listsRecyclerView: RecyclerView //list를 생성하는 View
-    //lateinit 키워드로 컴파일 시, 이후에 생성되게 될 것을 알려줘 에러가 나지 않도록 한다.
-    //RecyclerView를 사용하면, 많은 양의 데이터를 표시할 수 있다. 각 데이터 조각들은 RecyclerView 내의 항목으로 취급되어 내용을 구성한다.
-    val listDataManager: ListDataManager = ListDataManager(this) //데이터 관리 객
+//    lateinit var listsRecyclerView: RecyclerView //list를 생성하는 View
+//    //lateinit 키워드로 컴파일 시, 이후에 생성되게 될 것을 알려줘 에러가 나지 않도록 한다.
+//    //RecyclerView를 사용하면, 많은 양의 데이터를 표시할 수 있다. 각 데이터 조각들은 RecyclerView 내의 항목으로 취급되어 내용을 구성한다.
+//    val listDataManager: ListDataManager = ListDataManager(this) //데이터 관리 객리
+    //***** ListSectionFragment로 이동 *****
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
         setSupportActionBar(toolbar)
 
-        //The components of a RecyclerView
-        val lists = listDataManager.readLists() //리스트를 가져온다.
-        listsRecyclerView = findViewById(R.id.lists_recyclerview) //ID로 listsRecyclerView 객체를 가져온다.
-        listsRecyclerView.layoutManager = LinearLayoutManager(this) //레이아웃의 종류를 알려준.
-        //이 외에도 GridLayoutManager, StaggeredGridLayoutManager 을 사용할 수도 있다.
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this) //Adapter를 지정해 준다.
-        //RecyclerView는 아이템 리스트를 표현하기 위한, 필수 구성 요소인 Adapter와 ViewHolder가 있다. p.127
-        // 1. RecyclerView는 Adapter에 지정된 항목에 있는 item 혹은 ViewHolder를 요구한다.
-        // 2. Adapter가 작성된 ViewHolder pool에 도착한다.
-        // 3. 새 ViewHolder가 반환되거나 만들어 진다.
-        // 4. Adapter는 이 ViewHolder를 주어진 위치의 데이터 항목에 바인딩 한다.
-        // 5. ViewHolder가 표시되기 위해 RecyclerView로 반환된다.
+//        //The components of a RecyclerView
+//        val lists = listDataManager.readLists() //리스트를 가져온다.
+//        listsRecyclerView = findViewById(R.id.lists_recyclerview) //ID로 listsRecyclerView 객체를 가져온다.
+//        listsRecyclerView.layoutManager = LinearLayoutManager(this) //레이아웃의 종류를 알려준다.
+//        //이 외에도 GridLayoutManager, StaggeredGridLayoutManager 을 사용할 수도 있다.
+//        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this) //Adapter를 지정해 준다.
+//        //RecyclerView는 아이템 리스트를 표현하기 위한, 필수 구성 요소인 Adapter와 ViewHolder가 있다. p.127
+//        // 1. RecyclerView는 Adapter에 지정된 항목에 있는 item 혹은 ViewHolder를 요구한다.
+//        // 2. Adapter가 작성된 ViewHolder pool에 도착한다.
+//        // 3. 새 ViewHolder가 반환되거나 만들어 진다.
+//        // 4. Adapter는 이 ViewHolder를 주어진 위치의 데이터 항목에 바인딩 한다.
+//        // 5. ViewHolder가 표시되기 위해 RecyclerView로 반환된다.
+//
+//       //일반적으로 Adapter는 RecyclerView에 표시할 데이터를 제공한다.
+//        //ViewHolder는 해당 항목의 시각적 컨테이너이다. 표의 cell이라 생각하면 된다. 여기서는 RecyclerView에 각 항목의 모양을 알려 준다.
+//        //ViewHolder는 데이터 목록의 주어진 위치에 데이터를 표시하는 데 사용하는 작은 레이아웃 항목이다.
+//        //RecyclerView를 스크롤하면, 새로운 ViewHolder를 만드는 대신, 보이는 화면 영역 밖의 ViewHolders를 재사용해 새 데이터를 채워 list의 아래에 사용한다.
+//        //이 프로세스는 RecyclerView를 스크롤 할 때 끝없이 반복된다. ViewHolder를 재활용하여 list를 표현하면 효율적이다.
+        //***** ListSectionFragment로 이동 *****
 
-       //일반적으로 Adapter는 RecyclerView에 표시할 데이터를 제공한다.
-        //ViewHolder는 해당 항목의 시각적 컨테이너이다. 표의 cell이라 생각하면 된다. 여기서는 RecyclerView에 각 항목의 모양을 알려 준다.
-        //ViewHolder는 데이터 목록의 주어진 위치에 데이터를 표시하는 데 사용하는 작은 레이아웃 항목이다.
-        //RecyclerView를 스크롤하면, 새로운 ViewHolder를 만드는 대신, 보이는 화면 영역 밖의 ViewHolders를 재사용해 새 데이터를 채워 list의 아래에 사용한다.
-        //이 프로세스는 RecyclerView를 스크롤 할 때 끝없이 반복된다. ViewHolder를 재활용하여 list를 표현하면 효율적이다.
+        listSelectionFragment = supportFragmentManager.findFragmentById(R.id.list_selection_fragment) as ListSelectionFragment
+        fragmentContainer = findViewById(R.id.fragment_container) //레이아웃에서 지정한 id로 가져온다.
 
+        largeScreen = fragmentContainer != null //큰 화면을 사용 중인 지 확인한다.
 
         //Adding a Dialog
         fab.setOnClickListener{ view -> //fab 클릭시 이벤트 추가
@@ -88,11 +100,8 @@ class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListS
 
         builder.setPositiveButton(positiveButtonTitle) { dialog, i -> //버튼을 추가한다. //반대 작업을 하는 negative button도 있다.
             val list = TaskList(listTitleEditText.text.toString())
-            listDataManager.saveList(list)
-            //입력한 목록의 이름을 가져와 Tasklist를 생성한다.
-
-            val recyclerViewAdapter = listsRecyclerView.adapter as ListSelectionRecyclerViewAdapter
-            recyclerViewAdapter.addList(list) //adaptor를 사용해 표시해야할 항목을 추가해 준다.
+            listSelectionFragment.addList(list)
+            //Data Manager가 listSelectionFragment에 있기 때문에, 이를 처리하는 로직이 옮겨진다.
 
             dialog.dismiss()
             showListDetail(list)
@@ -101,22 +110,54 @@ class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListS
     }
 
     private fun showListDetail(list: TaskList) {
-        //Intents
-        //Android OS는 Intent를 사용한 전달 방식을 주로 사용하므로, Activity 간의 통신이 필요한 경우 가장 먼저 Intent를 고려하는 것이 좋다.
-        val listDetailIntent = Intent(this, ListDetailActivity::class.java) //Intent 생성
-        //Intent 생성자에 현재 Activity와 표시하려는 Activity 클래스를 전달한다.
-        listDetailIntent.putExtra(INTENT_LIST_KEY, list) //Extra 추가
-        //Extra는 receiver가 수행할 작업에 대한 정보 제공하는 key-value 쌍이다.
+        if (!largeScreen) {
+            //Intents
+            //Android OS는 Intent를 사용한 전달 방식을 주로 사용하므로, Activity 간의 통신이 필요한 경우 가장 먼저 Intent를 고려하는 것이 좋다.
+            val listDetailIntent = Intent(this, ListDetailActivity::class.java) //Intent 생성
+            //Intent 생성자에 현재 Activity와 표시하려는 Activity 클래스를 전달한다.
+            listDetailIntent.putExtra(INTENT_LIST_KEY, list) //Extra 추가
+            //Extra는 receiver가 수행할 작업에 대한 정보 제공하는 key-value 쌍이다.
 //        startActivity(listDetailIntent) //해당 Intent를 가지고 다음 Activity로 전환한다.
 //        //단순히 다음 Activity를 시작하는 용도
 
-        startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE) //해당 Intent를 가지고 다음 Activity로 전환한다.
-        //다음 Activity를 사용해 어떤 결과값을 받는 용도. 즉, ListDetailActivity가 종료되면 MainActivity로 result와 함께 돌아온다. p.187
-        //두 번째 인자로 전달하는 값은 result를 식별할 수 있는 request code 이다.
+            startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE) //해당 Intent를 가지고 다음 Activity로 전환한다.
+            //다음 Activity를 사용해 어떤 결과값을 받는 용도. 즉, ListDetailActivity가 종료되면 MainActivity로 result와 함께 돌아온다. p.187
+            //두 번째 인자로 전달하는 값은 result를 식별할 수 있는 request code 이다.
+        } else {
+            title = list.name
+            listFragment = ListDetailFragment.newInstance(list)
+
+            supportFragmentManager
+            //FragmentTransaction을 사용하여 변경할 필요가 있는 Fragment를 조작한다.
+                .beginTransaction() //트랜잭션 시작
+                .replace(R.id.fragment_container, listFragment!!, getString(R.string.list_fragment_tag))
+                .addToBackStack(null)
+                .commit()
+        }
+
+        fab.setOnClickListener { view ->
+            showCreateTaskDialog()
+        }
     }
 
-    override fun listItemClicked(list: TaskList) { //선택 시 이벤
+    override fun onListItemClicked(list: TaskList) { //선택 시 이벤트
         showListDetail(list)
+    }
+
+    private fun showCreateTaskDialog() { //Fragment로 새로 생성된 task를 전달하는 버튼의 콜백
+        val taskEditText = EditText(this)
+        taskEditText.inputType = InputType.TYPE_CLASS_TEXT
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.task_to_add)
+            .setView(taskEditText)
+            .setPositiveButton(R.string.add_task, { dialog, _ ->
+                val task = taskEditText.text.toString()
+                listFragment?.addTask(task)
+                dialog.dismiss()
+            })
+            .create()
+            .show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,16 +166,32 @@ class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListS
         if (requestCode == LIST_DETAIL_REQUEST_CODE) { //request code 확인
             data?.let { //data가 null인지 여부 확인
                 //https://kotlinlang.org/docs/reference/null-safety.html
-                listDataManager.saveList(data.getParcelableExtra(INTENT_LIST_KEY)) //업데이트할 항목이 있으면 Data model에서 업데이트
-                updateLists() //view 업데이트
+                listSelectionFragment.saveList(data.getParcelableExtra<TaskList>(INTENT_LIST_KEY))
             }
         }
     }
 
-    private fun updateLists() {
-        val lists = listDataManager.readLists()
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
-        //새로운 데이터를 불러와 view를 업데이트 한다.
+    override fun onBackPressed() { //back button(물리키) 눌렀을 때 호출된다.
+        super.onBackPressed()
+
+        title = resources.getString(R.string.app_name)
+
+        listFragment?.list?.let {
+            listSelectionFragment?.listDataManager?.saveList(it) //목록을 저장한다.
+        }
+
+        if (listFragment != null) { //레이아웃에서 detail fragment를 제거한다.
+            //여러번 물리키를 누를 수 있으므로 한 번만 제거해야 한다.
+            supportFragmentManager
+                .beginTransaction()
+                .remove(listFragment!!)
+                .commit()
+            listFragment = null
+        }
+
+        fab.setOnClickListener { view -> //FAB 재설정
+            showCreateListDialog()
+        }
     }
 }
 
@@ -287,8 +344,52 @@ class MainActivity : AppCompatActivity(), ListSelectionRecyclerViewAdapter.ListS
 
 
 
+//Chapter 11: Using Fragments
 
+//Getting started
+//타블렛에서도 잘 작동하지만, 화면에 따라 최적화되지 않는다. 화면을 절반으로 분할하여, 한쪽에서 모든 list를 표시하고, 나머지 절반은 각 list의 task를 표시한다.
+//하지만 이 방법은 반대로, 타블렛이 아닌 일반 폰 화면에서는 제대로 작동하지 않을 가능성이 크다. 따라서 크기에 따라 지원하는 레이아웃이 달라져야 한다.
 
+//Creating a Fragment
+//project navigator에서 해당 패키지를 우클릭하고, New ▸ Fragment ▸ Fragment (Blank) 를 선택한다.
+//Fragment를 Activity와 비슷한 것으로 생각하면 된다. Activity 생성 때와 마찬가지로 생성 시 옵션을 추가해 줄 수 있는 창이 뜬다.
+// • Fragment Name : Fragment 명을 입력한다. 아래의 xml 이름도 자동으로 바뀌게 된다.
+// • Create Layout XML : xml 파일을 추가할 지 체크박스. 보통은 default로 선택한다.
+// • Include fragment factory methods : Fragment를 인스턴스화하는 factory 메서드를 추가한다.
+// • Include interface callbacks : 다른 객체가 Fragment에서 콜백을 수신할 수 있도록 인터페이스를 생성한다.
+// • Source Language : Kotlin을 선택한다.
 
+//What is a Fragment?
+//Fragment는 Activity의 사용자 인터페이스 일부이며, Activity에 자체 레이아웃을 제공한다.
+//이 레이아웃으로 앱이 실행되는 동안 앱에서 동적으로 사용자 인터페이스를 추가하고 제거할 수 있다.
+//예를 들어 화면 크기에 따라 Activity 몇 개의 Fragment를 가져야 하는 지 결정할 수 있다.
+//해당 앱에서는, 태블릿에서 실행한 경우, Fragment 중 하나만 Activity에 표시하고, List를 클릭한 경우 다음 Activity를 표시할 수 있다.
+//Fragment에 포함된 Activity의 Life cycle과 다른 Fragment 자신만의 Life cycle이 있다.
+//Fragment가 런타임에 표시되는지 여부를 알 수 없으므로, 가능한 self contained 되도록 구현하 것이 중요하다.
+//따라서 첫 Fragment를 생성할 때 콜백 인퍼체이스를 생성하도록 설정했다. 이것으로 다른 객체와 통신하게 된다.
+//https://developer.android.com/guide/components/fragments
 
+//From Activity to Fragments
+//MainActivity에서 필요한 변수와 메서드들을 ListSelectionFragment로 옮겨준다.
 
+//Showing the Fragment
+//recall이 되면, Fragment에 의해 RecyclerView가 표시되도록 레이아웃을 조정해야한다.
+//또한 Activity 레이아웃이 Fragment를 표시해야 한다는 것을 알려줘야 한다.
+//지금까지는 Design 탭에서 레이아웃을 작업했지만, 여러 파일에 위젯을 복사해야 하는 경우, xml로 작업하는 것이 더 효율적일 수 있다.
+//이전 파트에서, 필요한 MainActivity의 변수와 메서드들을 ListSelectionFragment로 옮겨준 것처럼,
+//xml에서 Text 탭을 선택해 필요한 위젯을 복사해서 옮겨주면 된다.
+
+//Creating your next Fragment
+//선택한 list의 detail을 표시해 줄 Fragment를 추가해 준다.
+//project navigator에서 해당 패키지를 우클릭하고, New ▸ Fragment ▸ Fragment (Blank) 를 선택한다.
+//레이아웃 또한 이전 파트에서 처럼, xml에서 Text 탭을 선택해 필요한 위젯을 복사해서 옮겨주면 된다.
+
+//Bringing the Activity into action
+//Fragment는 Activity 안에 있어야만 사용할 수 있다. Fragment와 통신하는 방법과 화면에 언제 나타나는 지 조정할 수 있어야 한다.
+//따라서 MainActivity가 적절한 때에 새로운 Fragments를 보여줘야 한다.
+//큰 화면에서 작동하는 레이아웃을 만들어야 한다. layout 폴더에서 우클릭 ▸ New ▸ Layout resource file 를 선택한다.
+//여기서 생성하는 레이아웃은 큰 화면에서만 표시되는 새 content_main.xml을 만드는 것이다. 따라서, File name에는 content_main를 입력하고
+//Available qualifiers list에서 size를 선택하고, >> 버튼으로 옮겨온다. 그러면 다양한 크기를 선택할 수 있는데, X-Large를 선택한다.
+//OK를 누르면, content_main.xml에 두 개의 레이아웃을 보여준다.
+//android : name 속성으로 사용할 Fragment를 알려줄 수 있다.
+//전체 Fragment를 업데이트 하는 대신 새로 선택된 Fragment의 목록을 포함하는 새 Fragment를 로드하는 것이 쉽다.
