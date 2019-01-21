@@ -393,3 +393,32 @@ class MainActivity : AppCompatActivity(), ListSelectionFragment.OnListItemFragme
 //OK를 누르면, content_main.xml에 두 개의 레이아웃을 보여준다.
 //android : name 속성으로 사용할 Fragment를 알려줄 수 있다.
 //전체 Fragment를 업데이트 하는 대신 새로 선택된 Fragment의 목록을 포함하는 새 Fragment를 로드하는 것이 쉽다.
+
+
+
+
+//Chapter 12: Material Design
+
+//What is Material Design?
+//Material Design은 사용자가 앱과 상호작용 하는 방식을 표준화하는 것을 목표로 하는 디자인 언어이다.
+//버튼 클릭, 위젯의 표현과 위치, 애니메이션까지 다양하다. 안드로이드 표준 디자인으로 자리잡았다. 사용자가 동일한 경험을 하도록 하는 것이 중요하다.
+//https://material.io
+
+//Primary and secondary colors
+//색상이 중요한 요소이지만 과용해선 안 된다. 앱에 너무 많은 색상을 사용하면 오히려 혼란스럽다.
+//Material Design에서는 1차(기본)와 2차(보조) 색상 선택에 중점을 둔다.
+//기본 색상은 앱에서 가장 자주 사용하는 생상이다. Action bar, background 등에 사용하는 것이 좋다.
+//보조 색상은 앱의 특정 영역을 강조하는 데 사용되며, 기본 색상과 대조되어야 한다. 그렇게 설정해야, 보조 색상을 사용할 때 주의를 집중시킬 수 있다.
+//bytton, FAB, progress bar 등에 사용하는 것이 좋다.
+//Material Design 홈페이지의 Color Tool에서 해당 색을 설정할 수 있다.
+//https://material.io/tools/color/#!/?view.left=0&view.right=0
+//원하는 기본 색상과 보조 색상을 선택하고, Export 버튼을 눌러 설정한 값을 가져올 수 있다.
+//iOS는 Swift 파일로, Android는 xml 파일로 다운로드 된다.
+//res ‣ values 에 해당 colors.xml 파일을 붙여 넣는다. 이후, styles.xml에서 설정을 해 줘야 한다.
+
+//Card views
+//Material Design의 Card를 사용하면 더 많은 정보를 깔끔하게 표현할 수 있다.
+//https://material.io/design/components/cards.html
+//Card를 사용하기 위해서는 dependecy를 설정해 줘야 한다. build.gradle (Module: app)을 열고,
+//dependecies 블록에 implementation 'com.android.support:cardview-v7:26.1.0' 를 추가해 준다.
+//상단 알림에 Sync Now를 클릭해 주면, 종속성이 업데이트 된다. 이후, 레이아웃 에디터에서 Card를 사용할 수 있다. p.229
