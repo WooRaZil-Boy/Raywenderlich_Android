@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="together">
+
+    <!-- 순차 재생을 원한다면, ordering을 sequential으로 지정해 준다. -->
+
+    <objectAnimator
+        android:propertyName="alpha"
+        android:duration="1000"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:interpolator="@android:interpolator/linear"
+        android:valueFrom="1.0"
+        android:valueTo="0.0"
+        android:valueType="floatType"/>
+
+    <!--
+        android:valueFrom : 시작 값
+        android:valueTo : 종료 값
+        android:valueType : 값 타입. floatType 혹은 intType 으로 지정해 준다.
+        android:propertyName : 애니메이션 속성
+        android:duration : 지속 시간
+        android:repeatCount : 반복 횟수
+        android:repeatMode : 반복 모드
+        android:interpolator : @android:interpolator/ 로 자동 완성 옵션에서 사용 가능한 interpolator을 지정해 준다.
+
+    -->
+
+   <objectAnimator
+       android:propertyName="translationY"
+       android:duration="1000"
+       android:repeatCount="1"
+       android:repeatMode="reverse"
+       android:interpolator="@android:interpolator/bounce"
+       android:valueFrom="0"
+       android:valueTo="-500"
+       android:valueType="floatType"/>
+</set>
+
+    <!-- <set>은 AnimatorSet과 동일한 기능을 한다. -->
+    <!-- <animator>은 ValueAnimator 동일한 기능을 한다. -->
+    <!-- <objectAnimator>은 ObjectAnimator의 약자이다. -->
+
+<!--    xml에 animation을 선언해 작성해 두면, 필요할 때마다 쉽게 재사용할 수 있다.
+xml로 애니메이션을 정의하는 것은 View layout을 구성하는 것과 유사하다.  -->
